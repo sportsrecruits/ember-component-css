@@ -19,7 +19,7 @@ module.exports = {
     return new Funnel(this.projectRoot, {
       srcDir: this._podDirectory(),
       exclude: ['styles/**/*'],
-      include: ['**/*.{' + this.allowedStyleExtensions + ',}'],
+      include: this._podStyleIncludes(),
       allowEmpty: true,
       annotation: 'Funnel (ember-component-css grab files)'
     });
@@ -35,6 +35,16 @@ module.exports = {
 
   _podDirectory: function() {
     return this.appConfig.podModulePrefix && !this._isAddon() ? this.appConfig.podModulePrefix.replace(this.appConfig.modulePrefix, '') : '';
+  },
+
+  _podStyleIncludes: function() {
+    const configuredBlobs = this.addonConfig.podStyleIncludes;
+
+    if (configuredBlobs) {
+      return configuredBlobs.constructor === Array ? configuredBlobs : [configuredBlobs];
+    } else {
+      return ['**/*.{' + this.allowedStyleExtensions + ',}'];
+    }
   },
 
   _namespacingIsEnabled: function() {
